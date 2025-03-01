@@ -6,6 +6,7 @@ import { FilmsModule } from './films/films.module';
 import { OrderModule } from './order/order.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { databaseConfig } from './config/сonnection';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { join } from 'path';
       isGlobal: true,
       cache: true,
     }),
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/dataBase'),
+    MongooseModule.forRoot(databaseConfig.uri),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
       serveRoot: '/public/',

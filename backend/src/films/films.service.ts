@@ -11,7 +11,7 @@ export class FilmsService {
     const data = await this.filmModel.find().select('-schedule -_id').exec();
 
     return {
-      total: 3123124.234234,
+      total: data.length,
       items: data,
     };
   }
@@ -23,7 +23,7 @@ export class FilmsService {
       .exec();
 
     return {
-      total: 3123124.234234,
+      total: data.schedule.length,
       items: data.schedule,
     };
   }
