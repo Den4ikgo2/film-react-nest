@@ -11,7 +11,7 @@ export class OrderService {
   async createOrder(createOrderDto: CreateTicketDto) {
     const ticketsArray = createOrderDto.tickets;
 
-    ticketsArray.map(async (ticket) => {
+    for (const ticket of ticketsArray) {
       const filmDate = await this.filmModel
         .findOne({
           id: ticket.film,
@@ -38,7 +38,7 @@ export class OrderService {
           );
         }
       }
-    });
+    }
     return {
       total: ticketsArray.length,
       items: ticketsArray,
