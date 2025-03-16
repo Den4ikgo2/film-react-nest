@@ -1,30 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './entities/film.entity';
-import { Model } from 'mongoose';
+import { Repository } from 'typeorm';
+import { Schedule } from 'src/order/entities/schedule.entity';
 
 @Injectable()
 export class FilmsService {
-  constructor(@InjectModel(Film.name) private filmModel: Model<Film>) {}
-
+  constructor(
+    @InjectRepository(Film)
+    private filmRepository: Repository<Film>,
+    @InjectRepository(Schedule)
+    private schedulRepository: Repository<Schedule>,
+  ) {}
   async getAllFilms() {
-    const data = await this.filmModel.find().select('-schedule -_id').exec();
+    const data = await this.filmRepository.find();
+
+    const films = data.map((film) => ({
+      ...film,
+      description: film.about,
+    }));
 
     return {
-      total: data.length,
-      items: data,
+      total: films.length,
+      items: films,
     };
   }
 
   async findFilm(id: string) {
-    const data = await this.filmModel
-      .findOne({ id })
-      .select('schedule id -_id')
-      .exec();
+    const data = await this.schedulRepository.find({
+      where: { filmId: id },
+    });
+
+    const schedule = data.map((item) => {
+      return {
+        ...item,
+        taken: item.taken.split(', '),
+      };
+    });
 
     return {
-      total: data.schedule.length,
-      items: data.schedule,
+      total: schedule.length,
+      items: schedule,
     };
   }
 }

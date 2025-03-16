@@ -1,47 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTicketDto } from './dto/order.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Film } from 'src/films/entities/film.entity';
 
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+import { Schedule } from './entities/schedule.entity';
+import { CreateTicketDto } from './dto/order.dto';
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel(Film.name) private filmModel: Model<Film>) {}
+  constructor(
+    @InjectRepository(Schedule)
+    private scheduleRepository: Repository<Schedule>,
+  ) {}
 
   async createOrder(createOrderDto: CreateTicketDto) {
     const ticketsArray = createOrderDto.tickets;
+    let items = [];
 
     for (const ticket of ticketsArray) {
-      const filmDate = await this.filmModel
-        .findOne({
-          id: ticket.film,
-        })
-        .exec();
-
-      const numberHall = filmDate.schedule.findIndex((index) => {
-        return index.id === ticket.session;
+      const filmDate = await this.scheduleRepository.findOne({
+        where: {
+          id: ticket.session,
+        },
       });
 
-      if (numberHall >= 0) {
-        if (
-          filmDate.schedule[numberHall].taken.indexOf(
-            `${ticket.row}:${ticket.seat}`,
-          ) === -1
-        ) {
-          filmDate.schedule[numberHall].taken.push(
-            `${ticket.row}:${ticket.seat}`,
-          );
-
-          await this.filmModel.updateOne(
-            { id: ticket.film },
-            { $set: { schedule: filmDate.schedule } },
-          );
-        }
+      if (!filmDate) {
+        throw new Error(`Film with id ${ticket.film} not found`);
       }
+
+      const place = `${ticket.row}:${ticket.seat}`;
+
+      if (filmDate.taken == '') {
+        filmDate.taken = place;
+      } else {
+        filmDate.taken = `${filmDate.taken}, ${place}`;
+      }
+
+      await this.scheduleRepository.save(filmDate);
+
+      items = [...items, filmDate];
     }
-    return {
-      total: ticketsArray.length,
-      items: ticketsArray,
-    };
+    return { total: items.length, items: items };
   }
 }

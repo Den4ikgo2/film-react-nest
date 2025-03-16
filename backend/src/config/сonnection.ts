@@ -3,5 +3,5 @@ export const databaseConfig = {
 };
 
 export const serverConfig = {
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || 5432,
 };
