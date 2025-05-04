@@ -1,4 +1,4 @@
-import { Schedule } from 'src/order/entities/schedule.entity';
+import { Schedule } from '../../order/entities/schedule.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
