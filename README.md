@@ -1,5 +1,8 @@
 # FILM!
 
+## Ссылка на проект
+http://films.students.nomorepartiessbs.ru/
+
 ## Установка
 
 ### MongoDB
