@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Film } from './films/entities/film.entity';
 import { Schedule } from './order/entities/schedule.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import * as path from 'node:path';
 
 @Module({
   imports: [
@@ -33,8 +33,9 @@ import { join } from 'path';
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-      serveRoot: '/public/',
+      rootPath: path.join(__dirname, '..', 'public'),
+      renderPath: '/content/afisha/',
+      serveRoot: '/',
     }),
     FilmsModule,
     OrderModule,

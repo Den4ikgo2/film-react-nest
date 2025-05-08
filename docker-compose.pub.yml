@@ -37,7 +37,7 @@ services:
       - internal
 
   frontend:
-    image: "ghcr.io/${OWNER}/sp18_frontend:latest"
+    image: ghcr.io/den4ikgo2/sp18_frontend:latest
     environment:
       VITE_BASE_URL: /
       VITE_API_URL: /api/afisha
@@ -46,7 +46,7 @@ services:
       - frontend_build:/app/dist
 
   backend:
-    image: "ghcr.io/${OWNER}/sp18_backend:latest"
+    image: ghcr.io/den4ikgo2/sp18_backend:latest
     environment:
       PORT: 3000
       DEBUG: "*"
@@ -65,9 +65,9 @@ services:
         condition: service_healthy
 
   server:
-    image: "ghcr.io/${OWNER}/sp18_server:latest"
+    image: ghcr.io/den4ikgo2/sp18_server:latest
     ports:
-      - 80:80
+      - 81:80
     volumes:
       - frontend_build:/var/www
     depends_on:
