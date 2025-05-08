@@ -14,6 +14,7 @@ import { join } from 'path';
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
+      envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -21,7 +22,7 @@ import { join } from 'path';
         /* При использовании DATABASE_DRIVER из .env, начинается ругться "useFactory" */
         type: 'postgres',
         host: configService.get('DATABASE_HOST'),
-        port: configService.get('DATABASE_PORT'),
+        port: parseInt(configService.get('DATABASE_PORT') || '5432', 10),
         username: configService.get('DATABASE_USERNAME'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
