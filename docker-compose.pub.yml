@@ -37,7 +37,7 @@ services:
       - internal
 
   frontend:
-    image: "ghcr.io/${OWNER}/sp16_frontend:latest"
+    image: "ghcr.io/${OWNER}/sp18_frontend:latest"
     environment:
       VITE_BASE_URL: /
       VITE_API_URL: /api/afisha
